@@ -10,4 +10,5 @@ import java.util.*
 interface IngredientTranslationRepository : JpaRepository<IngredientTranslationEntity, UUID> {
 
     fun existsIngredientTranslationEntitiesByNameAndLocale(name: String, locale: Locale): Boolean
+    fun findByNameAndLocale(name: String, locale: Locale): Optional<IngredientTranslationEntity>
 }
