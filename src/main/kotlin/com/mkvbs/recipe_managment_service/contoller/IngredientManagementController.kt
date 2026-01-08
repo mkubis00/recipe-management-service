@@ -90,6 +90,15 @@ class IngredientManagementController(
                 description = "HTTP Status.OK"
             ),
             ApiResponse(
+                responseCode = "404",
+                description = "HTTP Status NOT_FOUND",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ErrorResponseDto::class)
+                    )
+                ]
+            ),
+            ApiResponse(
                 responseCode = "500",
                 description = "HTTP Status INTERNAL_SERVER_ERROR",
                 content = [
