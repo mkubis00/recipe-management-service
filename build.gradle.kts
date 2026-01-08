@@ -94,7 +94,7 @@ tasks.withType<Test> {
                 println("Total tests: ${result.testCount}")
                 print("Passed: ${green}${bold}${result.successfulTestCount}${reset}, ")
                 print("Failed: ${red}${bold}${result.failedTestCount}${reset}, ")
-                println("Skipped:${yellow}${bold}${result.skippedTestCount}${reset}")
+                println("Skipped: ${yellow}${bold}${result.skippedTestCount}${reset}")
                 println("${bold}---------------------------------------${reset}\n")
             }
         }

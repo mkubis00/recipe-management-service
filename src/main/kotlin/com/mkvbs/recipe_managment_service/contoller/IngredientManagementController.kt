@@ -137,7 +137,7 @@ class IngredientManagementController(
         ]
     )
     @GetMapping("/ingredientById/{id}")
-    fun getIngredientById(@PathVariable id: UUID): ResponseEntity<IngredientResponseDto> {
+    fun getIngredientById(@Valid @PathVariable id: UUID): ResponseEntity<IngredientResponseDto> {
         val ingredient = ingredientService.getIngredientById(id)
         return ResponseEntity.status(HttpStatus.OK).body(ingredient.toResponseDto())
     }
