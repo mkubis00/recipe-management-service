@@ -24,18 +24,6 @@ data class IngredientTranslationDto(
     @field:NotEmpty(message = "Name can not be null or empty")
     @field:Size(min = 3, max = 30, message = "Name can not be less than 3 and not greater than 30 characters")
     val name: String,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+)
 
-        other as IngredientTranslationDto
-
-        return locale == other.locale
-    }
-
-    override fun hashCode(): Int {
-        return locale.hashCode()
-    }
-}
 

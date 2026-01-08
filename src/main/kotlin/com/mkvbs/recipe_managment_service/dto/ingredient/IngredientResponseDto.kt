@@ -19,11 +19,11 @@ data class IngredientResponseDto(
         schema = Schema(implementation = IngredientTranslationResponseDto::class),
         minItems = 1
     )
-    val translations: MutableSet<IngredientTranslationResponseDto>,
+    val translations: List<IngredientTranslationResponseDto>,
 
     @field:ArraySchema(
         schema = Schema(implementation = IngredientPortionResponseDto::class),
         minItems = 1
     )
-    val portions: MutableSet<IngredientPortionResponseDto>,
+    val portions: List<IngredientPortionResponseDto>,
 )

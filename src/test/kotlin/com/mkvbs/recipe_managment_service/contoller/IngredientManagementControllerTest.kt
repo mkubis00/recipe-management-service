@@ -76,17 +76,21 @@ class IngredientManagementControllerTest {
         protein = protein
     )
 
-    private val ingredient = Ingredient(
-        id = ingredientId,
-        translations = mutableSetOf(translation),
-        portions = mutableSetOf(portion)
-    )
+    private val ingredient = setUpIngredient()
 
     private val ingredientToSave = IngredientDto(
-        translations = mutableSetOf(translationToSave),
-        portions = mutableSetOf(portionToSave)
+        translations = listOf(translationToSave),
+        portions = listOf(portionToSave)
     )
 
+    private fun setUpIngredient(): Ingredient {
+        val ingredient = Ingredient(
+            id = ingredientId
+        )
+        ingredient.addTranslations(listOf(translation))
+        ingredient.addPortions(listOf(portion))
+        return ingredient
+    }
 
     @Test
     fun `should create ingredient`() {
@@ -125,8 +129,8 @@ class IngredientManagementControllerTest {
     fun `should return 400 when some of data is not valid for create`() {
         val translation = IngredientTranslationDto(locale, "No")
         val ingredientToSave = IngredientDto(
-            translations = mutableSetOf(translation),
-            portions = mutableSetOf(portionToSave)
+            translations = listOf(translation),
+            portions = listOf(portionToSave)
         )
 
         val result = mockMvc.post("/api/ingredient/v1/addIngredient") {
@@ -135,6 +139,44 @@ class IngredientManagementControllerTest {
             accept(MediaType.APPLICATION_JSON)
         }.andExpect {
             status { isBadRequest() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+        }.andReturn()
+
+        assertNotNull(result.response.contentAsString)
+    }
+
+    @Test
+    fun `should return 400 when some translations are duplicated in request for create`() {
+        val ingredientToSave = IngredientDto(
+            translations = listOf(translationToSave, translationToSave),
+            portions = listOf(portionToSave)
+        )
+
+        val result = mockMvc.post("/api/ingredient/v1/addIngredient") {
+            contentType = MediaType.APPLICATION_JSON
+            content = jsonTester.write(ingredientToSave).json
+            accept(MediaType.APPLICATION_JSON)
+        }.andExpect {
+            status { isInternalServerError() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+        }.andReturn()
+
+        assertNotNull(result.response.contentAsString)
+    }
+
+    @Test
+    fun `should return 400 when portions are duplicated in request for create`() {
+        val ingredientToSave = IngredientDto(
+            translations = listOf(translationToSave),
+            portions = listOf(portionToSave, portionToSave)
+        )
+
+        val result = mockMvc.post("/api/ingredient/v1/addIngredient") {
+            contentType = MediaType.APPLICATION_JSON
+            content = jsonTester.write(ingredientToSave).json
+            accept(MediaType.APPLICATION_JSON)
+        }.andExpect {
+            status { isInternalServerError() }
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn()
 

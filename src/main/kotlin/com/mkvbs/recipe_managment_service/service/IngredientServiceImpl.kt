@@ -49,7 +49,7 @@ class IngredientServiceImpl(
         return foundedIngredientTranslationEntity.ingredient.toDomain()
     }
 
-    private fun checkIngredientsTranslations(translations: MutableSet<IngredientTranslation>) {
+    private fun checkIngredientsTranslations(translations: Set<IngredientTranslation>) {
         val existingTranslations = mutableListOf<IngredientTranslation>()
         translations.forEach {
             if (translationRepository.existsIngredientTranslationEntitiesByNameAndLocale(it.name, it.locale)) {

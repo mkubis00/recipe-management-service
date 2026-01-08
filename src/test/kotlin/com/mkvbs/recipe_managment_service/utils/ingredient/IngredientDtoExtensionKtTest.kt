@@ -31,8 +31,8 @@ class IngredientDtoExtensionKtTest {
     private val portionDto2 = IngredientPortionDto(portion2, calories2, fat2, carbohydrates2, protein2)
 
     private val ingredientDto = IngredientDto(
-        mutableSetOf(translationDto1, translationDto2),
-        mutableSetOf(portionDto1, portionDto2)
+        listOf(translationDto1, translationDto2),
+        listOf(portionDto1, portionDto2)
     )
 
     @Test

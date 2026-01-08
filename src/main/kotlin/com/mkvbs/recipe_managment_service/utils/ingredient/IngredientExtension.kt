@@ -6,8 +6,8 @@ import com.mkvbs.recipe_managment_service.entity.ingredient.IngredientEntity
 import com.mkvbs.recipe_managment_service.exception.MissingDataException
 
 fun Ingredient.toResponseDto(): IngredientResponseDto {
-    val translations = translations.map { it.toResponseDto() }.toMutableSet()
-    val portions = portions.map { it.toResponseDto() }.toMutableSet()
+    val translations = translations.map { it.toResponseDto() }
+    val portions = portions.map { it.toResponseDto() }
     return IngredientResponseDto(
         id = id ?: throw MissingDataException("Ingredient ID cannot be null"),
         translations,

@@ -1,10 +1,44 @@
 package com.mkvbs.recipe_managment_service.domain.ingredient
 
+import com.mkvbs.recipe_managment_service.domain.Locale
+import com.mkvbs.recipe_managment_service.exception.FymException
 import java.util.*
 
 class Ingredient(
     val id: UUID? = null,
+) {
+    private val _translations: MutableSet<IngredientTranslation> = mutableSetOf()
+    private val _portions: MutableSet<IngredientPortion> = mutableSetOf()
+    val translations: Set<IngredientTranslation> get() = _translations
+    val portions: Set<IngredientPortion> get() = _portions
 
-    val translations: MutableSet<IngredientTranslation>,
-    val portions: MutableSet<IngredientPortion>,
-)
+    fun addTranslations(newTranslations: List<IngredientTranslation>) {
+        newTranslations.forEach(this::addTranslation)
+    }
+
+    fun addPortions(newPortions: List<IngredientPortion>) {
+        newPortions.forEach(this::addPortion)
+    }
+
+    fun addTranslation(newTranslation: IngredientTranslation) {
+        validateTranslationUniqueness(newTranslation.locale)
+        _translations.add(newTranslation)
+    }
+
+    fun addPortion(newPortion: IngredientPortion) {
+        validateLocaleUniqueness(newPortion.type)
+        _portions.add(newPortion)
+    }
+
+    private fun validateLocaleUniqueness(type: PortionType) {
+        if (_portions.any { it.type == type }) {
+            throw FymException("Portion for type $type was given more then ones for this ingredient")
+        }
+    }
+
+    private fun validateTranslationUniqueness(locale: Locale) {
+        if (_translations.any { it.locale == locale }) {
+            throw FymException("Translation for locale $locale was given more then ones for this ingredient")
+        }
+    }
+}

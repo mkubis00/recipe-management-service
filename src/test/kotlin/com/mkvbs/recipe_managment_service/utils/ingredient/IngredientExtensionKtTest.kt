@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.*
 
+
 class IngredientExtensionKtTest {
     private val translation1Id = UUID.randomUUID()
     private val translation2Id = UUID.randomUUID()
@@ -50,9 +51,10 @@ class IngredientExtensionKtTest {
 
         val ingredient = Ingredient(
             id = ingredientId,
-            translations = mutableSetOf(translation1, translation2),
-            portions = mutableSetOf(portion1, portion2)
         )
+        ingredient.addTranslations(listOf(translation1, translation2))
+        ingredient.addPortions(listOf(portion1, portion2))
+
 
         val result = ingredient.toResponseDto()
 
@@ -70,9 +72,9 @@ class IngredientExtensionKtTest {
     fun `toResponseDto should throw MissingDataException when Ingredient ID is null`() {
         val ingredient = Ingredient(
             id = null,
-            translations = mutableSetOf(translation1, translation2),
-            portions = mutableSetOf(portion1, portion2)
         )
+        ingredient.addTranslations(listOf(translation1, translation2))
+        ingredient.addPortions(listOf(portion1, portion2))
 
         val exception = assertThrows(MissingDataException::class.java) {
             ingredient.toResponseDto()

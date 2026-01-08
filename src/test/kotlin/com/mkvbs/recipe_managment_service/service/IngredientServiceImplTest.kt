@@ -177,20 +177,19 @@ class IngredientServiceImplTest {
     }
 
     private fun createIngredient(): Ingredient {
-        val ingredientTranslations = mutableSetOf(
+        val ingredientTranslations = listOf(
             IngredientTranslation(null, enLocale, enName),
             IngredientTranslation(null, plLocale, plName),
         )
-        val ingredientPortions = mutableSetOf(
+        val ingredientPortions = listOf(
             IngredientPortion(null, PortionType.CUP, 1.0, 10.0, 20.0, 30.0),
             IngredientPortion(null, PortionType.TEASPOON, 2.0, 10.2, 20.2, 30.2)
         )
 
-        return Ingredient(
-            null,
-            ingredientTranslations,
-            ingredientPortions
-        )
+        val ingredient = Ingredient(null)
+        ingredient.addTranslations(ingredientTranslations)
+        ingredient.addPortions(ingredientPortions)
+        return ingredient
     }
 
     private fun createIngredientEntity(): IngredientEntity {
