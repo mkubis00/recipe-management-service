@@ -7,8 +7,8 @@ import com.mkvbs.recipe_managment_service.exception.ResourceAlreadyExistsExcepti
 import com.mkvbs.recipe_managment_service.exception.ResourceNotFoundException
 import com.mkvbs.recipe_managment_service.repository.IngredientRepository
 import com.mkvbs.recipe_managment_service.repository.IngredientTranslationRepository
-import com.mkvbs.recipe_managment_service.utlis.ingredient.toDomain
-import com.mkvbs.recipe_managment_service.utlis.ingredient.toEntity
+import com.mkvbs.recipe_managment_service.utils.ingredient.toDomain
+import com.mkvbs.recipe_managment_service.utils.ingredient.toEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*

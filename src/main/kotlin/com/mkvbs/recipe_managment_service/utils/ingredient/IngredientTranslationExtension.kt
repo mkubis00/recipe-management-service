@@ -1,4 +1,4 @@
-package com.mkvbs.recipe_managment_service.utlis.ingredient
+package com.mkvbs.recipe_managment_service.utils.ingredient
 
 import com.mkvbs.recipe_managment_service.domain.ingredient.IngredientTranslation
 import com.mkvbs.recipe_managment_service.dto.ingredient.IngredientTranslationResponseDto

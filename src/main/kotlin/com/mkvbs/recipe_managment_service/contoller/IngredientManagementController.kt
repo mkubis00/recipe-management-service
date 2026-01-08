@@ -5,8 +5,8 @@ import com.mkvbs.recipe_managment_service.dto.ErrorResponseDto
 import com.mkvbs.recipe_managment_service.dto.ingredient.IngredientDto
 import com.mkvbs.recipe_managment_service.dto.ingredient.IngredientResponseDto
 import com.mkvbs.recipe_managment_service.service.IIngredientService
-import com.mkvbs.recipe_managment_service.utlis.ingredient.toDomain
-import com.mkvbs.recipe_managment_service.utlis.ingredient.toResponseDto
+import com.mkvbs.recipe_managment_service.utils.ingredient.toDomain
+import com.mkvbs.recipe_managment_service.utils.ingredient.toResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema

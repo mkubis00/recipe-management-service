@@ -142,16 +142,23 @@ class GlobalExceptionHandler(
     }
 
     @ExceptionHandler(MissingDataException::class)
-    fun handleFymException(ex: MissingDataException): ResponseEntity<ErrorResponseDto> {
-        val errorResponse = ErrorResponseDto(HttpStatus.NOT_FOUND, ex.message)
+    fun handleMissingDataException(ex: MissingDataException): ResponseEntity<ErrorResponseDto> {
+        val errorResponse = ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, ex.message)
         logError(ex)
-        return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
+        return ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException::class)
-    fun handleFymException(ex: ResourceAlreadyExistsException): ResponseEntity<ErrorResponseDto> {
+    fun handleResourceAlreadyExistsException(ex: ResourceAlreadyExistsException): ResponseEntity<ErrorResponseDto> {
         val errorResponse = ErrorResponseDto(HttpStatus.CONFLICT, ex.message)
         logError(ex)
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
+    }
+
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun handleResourceNotFoundException(ex: ResourceNotFoundException): ResponseEntity<ErrorResponseDto> {
+        val errorResponse = ErrorResponseDto(HttpStatus.NOT_FOUND, ex.message)
+        logError(ex)
+        return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
     }
 }
