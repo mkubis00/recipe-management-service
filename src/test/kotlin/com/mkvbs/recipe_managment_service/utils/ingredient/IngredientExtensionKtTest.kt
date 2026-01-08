@@ -49,12 +49,11 @@ class IngredientExtensionKtTest {
     fun `toResponseDto should convert Ingredient to IngredientResponseDto when all fields are populated`() {
         val ingredientId = UUID.randomUUID()
 
-        val ingredient = Ingredient(
-            id = ingredientId,
+        val ingredient = Ingredient.create(
+            ingredientId,
+            listOf(translation1, translation2),
+            listOf(portion1, portion2)
         )
-        ingredient.addTranslations(listOf(translation1, translation2))
-        ingredient.addPortions(listOf(portion1, portion2))
-
 
         val result = ingredient.toResponseDto()
 
@@ -70,11 +69,11 @@ class IngredientExtensionKtTest {
 
     @Test
     fun `toResponseDto should throw MissingDataException when Ingredient ID is null`() {
-        val ingredient = Ingredient(
-            id = null,
+        val ingredient = Ingredient.create(
+            null,
+            listOf(translation1, translation2),
+            listOf(portion1, portion2)
         )
-        ingredient.addTranslations(listOf(translation1, translation2))
-        ingredient.addPortions(listOf(portion1, portion2))
 
         val exception = assertThrows(MissingDataException::class.java) {
             ingredient.toResponseDto()

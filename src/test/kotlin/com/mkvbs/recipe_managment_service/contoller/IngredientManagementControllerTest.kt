@@ -76,21 +76,16 @@ class IngredientManagementControllerTest {
         protein = protein
     )
 
-    private val ingredient = setUpIngredient()
+    private val ingredient = Ingredient.create(
+        ingredientId,
+        listOf(translation),
+        listOf(portion)
+    )
 
     private val ingredientToSave = IngredientDto(
         translations = listOf(translationToSave),
         portions = listOf(portionToSave)
     )
-
-    private fun setUpIngredient(): Ingredient {
-        val ingredient = Ingredient(
-            id = ingredientId
-        )
-        ingredient.addTranslations(listOf(translation))
-        ingredient.addPortions(listOf(portion))
-        return ingredient
-    }
 
     @Test
     fun `should create ingredient`() {

@@ -186,10 +186,11 @@ class IngredientServiceImplTest {
             IngredientPortion(null, PortionType.TEASPOON, 2.0, 10.2, 20.2, 30.2)
         )
 
-        val ingredient = Ingredient(null)
-        ingredient.addTranslations(ingredientTranslations)
-        ingredient.addPortions(ingredientPortions)
-        return ingredient
+        return Ingredient.create(
+            null,
+            ingredientTranslations, ingredientPortions
+        )
+
     }
 
     private fun createIngredientEntity(): IngredientEntity {

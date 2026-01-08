@@ -2,15 +2,47 @@ package com.mkvbs.recipe_managment_service.domain.ingredient
 
 import com.mkvbs.recipe_managment_service.domain.Locale
 import com.mkvbs.recipe_managment_service.exception.FymException
+import com.mkvbs.recipe_managment_service.exception.MissingDataException
 import java.util.*
 
-class Ingredient(
+class Ingredient private constructor(
     val id: UUID? = null,
 ) {
     private val _translations: MutableSet<IngredientTranslation> = mutableSetOf()
     private val _portions: MutableSet<IngredientPortion> = mutableSetOf()
     val translations: Set<IngredientTranslation> get() = _translations
     val portions: Set<IngredientPortion> get() = _portions
+
+    companion object {
+        fun fromDto(translations: List<IngredientTranslation>, portions: List<IngredientPortion>): Ingredient {
+            return Ingredient(null).apply {
+                addTranslations(translations)
+                addPortions(portions)
+            }
+        }
+
+        fun fromEntity(
+            id: UUID?,
+            translations: List<IngredientTranslation>,
+            portions: List<IngredientPortion>
+        ): Ingredient {
+            return Ingredient(id = id ?: throw MissingDataException("ID of ingredient cannot be null")).apply {
+                addTranslations(translations)
+                addPortions(portions)
+            }
+        }
+
+        fun create(
+            id: UUID?,
+            translations: List<IngredientTranslation>,
+            portions: List<IngredientPortion>
+        ): Ingredient {
+            return Ingredient(id).apply {
+                addTranslations(translations)
+                addPortions(portions)
+            }
+        }
+    }
 
     fun addTranslations(newTranslations: List<IngredientTranslation>) {
         newTranslations.forEach(this::addTranslation)
