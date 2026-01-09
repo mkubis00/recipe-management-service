@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: recipe-managment-service
+    name: recipe-management-service
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver

@@ -25,11 +25,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     implementation("org.jetbrains:annotations:24.1.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.1")
+    testImplementation("org.testcontainers:postgresql:1.19.1")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
@@ -53,12 +55,36 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
     imageName.set("mkvbs/${project.name}:${project.version}")
+}
+
+tasks.register<Test>("unitTest") {
+    group = "verification"
+    description = "Runs only unit tests."
+
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+
+    filter {
+        includeTestsMatching("**.*Test")
+        includeTestsMatching("**.*Tests")
+        excludeTestsMatching("**.integration.**")
+        excludeTestsMatching("**.*IT")
+    }
+}
+
+tasks.register<Test>("integrationTest") {
+    group = "verification"
+    description = "Runs only integration tests."
+
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+
+    filter {
+        includeTestsMatching("**.integration.**")
+        includeTestsMatching("**.*IT")
+    }
 }
 
 tasks.withType<Test> {
