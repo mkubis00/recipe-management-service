@@ -30,6 +30,7 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     implementation("org.jetbrains:annotations:24.1.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.testcontainers:junit-jupiter:1.19.1")
     testImplementation("org.testcontainers:postgresql:1.19.1")
     runtimeOnly("com.h2database:h2")

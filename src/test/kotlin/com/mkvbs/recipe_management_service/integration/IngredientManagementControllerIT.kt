@@ -1,7 +1,11 @@
 package com.mkvbs.recipe_management_service.integration
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.mkvbs.recipe_management_service.domain.Locale
 import com.mkvbs.recipe_management_service.domain.ingredient.PortionType
+import com.mkvbs.recipe_management_service.dto.ingredient.IngredientDto
+import com.mkvbs.recipe_management_service.dto.ingredient.IngredientPortionDto
+import com.mkvbs.recipe_management_service.dto.ingredient.IngredientTranslationDto
 import com.mkvbs.recipe_management_service.entity.ingredient.IngredientEntity
 import com.mkvbs.recipe_management_service.entity.ingredient.IngredientPortionEntity
 import com.mkvbs.recipe_management_service.entity.ingredient.IngredientTranslationEntity
@@ -16,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 
 @ActiveProfiles("test")
@@ -26,6 +31,8 @@ class IngredientControllerIT(
     @Autowired private val repository: IngredientRepository,
     @Autowired private val mockMvc: MockMvc,
 ) {
+    val objectMapper = jacksonObjectMapper()
+
     private val calories = 100.0
     private val fat = 5.0
     private val carbohydrates = 20.0
@@ -54,6 +61,78 @@ class IngredientControllerIT(
         ingredient.translations.add(translation)
         ingredient.portions.add(portion)
         ingredientId = repository.save(ingredient).id !!.toString()
+    }
+
+    @Test
+    fun `should add ingredient`() {
+        val newIngredientName = "newIngredientName"
+        val translation = IngredientTranslationDto(locale, newIngredientName)
+
+        val portion = IngredientPortionDto(
+            type = PortionType.GRAM,
+            calories = calories,
+            fat = fat,
+            carbohydrates = carbohydrates,
+            protein = protein,
+        )
+
+        val ingredient = IngredientDto(listOf(translation), listOf(portion))
+
+        mockMvc.post("/api/ingredient/v1/addIngredient") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(ingredient)
+        }.andExpect {
+            status { isCreated() }
+            jsonPath("$.id") { isNotEmpty() }
+            jsonPath("$.translations[0].name") { value(newIngredientName) }
+        }
+    }
+
+    @Test
+    fun `should not add ingredient when it exists`() {
+        val translation = IngredientTranslationDto(locale, ingredientName)
+
+        val portion = IngredientPortionDto(
+            type = PortionType.GRAM,
+            calories = calories,
+            fat = fat,
+            carbohydrates = carbohydrates,
+            protein = protein,
+        )
+
+        val ingredient = IngredientDto(listOf(translation), listOf(portion))
+
+        mockMvc.post("/api/ingredient/v1/addIngredient") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(ingredient)
+        }.andExpect {
+            status { isConflict() }
+        }
+    }
+
+    @Test
+    fun `should not add ingredient when data is invalid`() {
+        val translation = IngredientTranslationDto(locale, "no")
+
+        val portion = IngredientPortionDto(
+            type = PortionType.GRAM,
+            calories = calories,
+            fat = fat,
+            carbohydrates = carbohydrates,
+            protein = protein,
+        )
+
+        val ingredient = IngredientDto(listOf(translation), listOf(portion))
+
+        mockMvc.post("/api/ingredient/v1/addIngredient") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(ingredient)
+        }.andExpect {
+            status { isBadRequest() }
+        }
     }
 
     @Test
