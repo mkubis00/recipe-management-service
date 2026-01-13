@@ -46,8 +46,8 @@ class IngredientServiceImplTest {
 
     @Test
     fun `addIngredient should save ingredient when translations are unique`() {
-        whenever(translationRepository.existsIngredientTranslationEntitiesByNameAndLocale(any(), any())).thenReturn(
-            false
+        whenever(translationRepository.findAllByNameIn(any())).thenReturn(
+            listOf()
         )
         whenever(ingredientRepository.save(any())).thenReturn(ingredientEntity)
 
@@ -60,31 +60,26 @@ class IngredientServiceImplTest {
         assertNotNull(result.id)
 
         Mockito.verify(translationRepository, Mockito.times(1))
-            .existsIngredientTranslationEntitiesByNameAndLocale(enName, enLocale)
-        Mockito.verify(translationRepository, Mockito.times(1))
-            .existsIngredientTranslationEntitiesByNameAndLocale(plName, plLocale)
+            .findAllByNameIn(any())
         Mockito.verify(ingredientRepository, Mockito.times(1)).save(any())
     }
 
     @Test
     fun `addIngredient should throw ResourceAlreadyExistsException for duplicate translation`() {
         whenever(
-            translationRepository.existsIngredientTranslationEntitiesByNameAndLocale(
-                enName,
-                enLocale
+            translationRepository.findAllByNameIn(
+                any()
             )
         ).thenReturn(
-            false
-        )
-        whenever(
-            translationRepository.existsIngredientTranslationEntitiesByNameAndLocale(
-                plName,
-                plLocale
+            listOf(
+                IngredientTranslationEntity(
+                    UUID.randomUUID(),
+                    plLocale,
+                    plName,
+                    Mockito.mock(IngredientEntity::class.java)
+                )
             )
-        ).thenReturn(
-            true
         )
-        whenever(ingredientRepository.save(any())).thenReturn(ingredientEntity)
 
         val exception = assertThrows<ResourceAlreadyExistsException> {
             ingredientService.addIngredient(ingredient)
@@ -93,9 +88,7 @@ class IngredientServiceImplTest {
         assertEquals("Translations already exist: name: $plName, locale: $plLocale", exception.message)
 
         Mockito.verify(translationRepository, Mockito.times(1))
-            .existsIngredientTranslationEntitiesByNameAndLocale(enName, enLocale)
-        Mockito.verify(translationRepository, Mockito.times(1))
-            .existsIngredientTranslationEntitiesByNameAndLocale(plName, plLocale)
+            .findAllByNameIn(any())
         Mockito.verify(ingredientRepository, Mockito.times(0)).save(any())
     }
 
@@ -153,10 +146,9 @@ class IngredientServiceImplTest {
 
     @Test
     fun `getIngredientByName should return ingredient when translation exists`() {
-        val translation = ingredientEntity.translations.first()
         val id = ingredientEntity.id!!
 
-        whenever(translationRepository.findByNameAndLocale(any(), any())).thenReturn(Optional.of(translation))
+        whenever(ingredientRepository.findByNameAndLocale(any(), any())).thenReturn(Optional.of(ingredientEntity))
 
         val result = ingredientService.getIngredientByName(enName, enLocale)
 
@@ -167,7 +159,7 @@ class IngredientServiceImplTest {
     @Test
     fun `getIngredientByName should throw ResourceNotFoundException when translation does not exist`() {
 
-        whenever(translationRepository.findByNameAndLocale(any(), any())).thenReturn(Optional.empty())
+        whenever(ingredientRepository.findByNameAndLocale(any(), any())).thenReturn(Optional.empty())
 
         val exception = assertThrows<ResourceNotFoundException> {
             ingredientService.getIngredientByName(enName, enLocale)
