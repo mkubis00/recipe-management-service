@@ -44,16 +44,18 @@ class IngredientServiceImpl(
         name: String,
         locale: Locale
     ): Ingredient {
-        val foundedIngredientTranslationEntity = translationRepository.findByNameAndLocale(name, locale)
+        val foundedIngredientEntity = ingredientRepository.findByNameAndLocale(name, locale)
             .orElseThrow { ResourceNotFoundException("Ingredient with name $name and locale $locale does not exist") }
-        return foundedIngredientTranslationEntity.ingredient.toDomain()
+        return foundedIngredientEntity.toDomain()
     }
 
     private fun checkIngredientsTranslations(translations: Set<IngredientTranslation>) {
-        val existingTranslations = mutableListOf<IngredientTranslation>()
-        translations.forEach {
-            if (translationRepository.existsIngredientTranslationEntitiesByNameAndLocale(it.name, it.locale)) {
-                existingTranslations.add(it)
+        val namesToCheck = translations.map { it.name }
+        val existingEntities = translationRepository.findAllByNameIn(namesToCheck)
+
+        val existingTranslations = translations.filter { translation ->
+            existingEntities.any { entity ->
+                entity.name == translation.name && entity.locale == translation.locale
             }
         }
 
